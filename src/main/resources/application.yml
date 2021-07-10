@@ -11,7 +11,7 @@ spring:
     port: 6379
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
     show-sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -19,9 +19,9 @@ spring:
     properties:
       hibernate.format_sql: true
 
-#logging:
-#  pattern:
-#    console: "%d %-5level %logger : %msg%n"
-#  level:
-#    org.springframework: info
-#    org.hibernate: debug
+logging:
+  pattern:
+    console: "%d %-5level %logger : %msg%n"
+  level:
+    org.springframework: info
+    org.hibernate: info

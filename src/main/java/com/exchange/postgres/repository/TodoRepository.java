@@ -1,3 +1,4 @@
+/*
 package com.exchange.postgres.repository;
 
 import com.exchange.postgres.entity.Todo;
@@ -7,4 +8,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TodoRepository extends JpaRepository<Todo, Long> {
-}
+}*/

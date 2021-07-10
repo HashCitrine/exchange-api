@@ -40,7 +40,7 @@ CREATE TABLE currency (
                           currency varchar(100) NOT NULL,
                           currency_kr varchar(100) NOT NULL,
                           currency_abbr varchar(5) NOT NULL,
-                          currenct_price int8 NOT NULL,
+                          current_price int8 NOT NULL,
                           previous_price int8 NOT NULL,
                           transaction_price int8 NOT NULL,
                           CONSTRAINT currency_pkey PRIMARY KEY (currency)
@@ -51,7 +51,7 @@ CREATE INDEX currency_currency_kr_idx ON public.currency USING btree (currency_k
 COMMENT ON COLUMN public.currency.currency IS '화폐명';
 COMMENT ON COLUMN public.currency.currency_kr IS '화페 한글명';
 COMMENT ON COLUMN public.currency.currency_abbr IS '화폐 약어';
-COMMENT ON COLUMN public.currency.currenct_price IS '현재가';
+COMMENT ON COLUMN public.currency.current_price IS '현재가';
 COMMENT ON COLUMN public.currency.previous_price IS '전일가';
 COMMENT ON COLUMN public.currency.transaction_price IS '거래대금';
 
@@ -88,17 +88,17 @@ COMMENT ON COLUMN public."member"."password" IS '수정시간';
 
 
 CREATE TABLE trade (
-                       order_id bigserial NOT NULL,
+                       trade_id bigserial NOT NULL,
                        trade_date timestamptz NOT NULL,
-                       buy_id int8 NOT NULL,
-                       sell_id int8 NOT NULL,
-                       CONSTRAINT trade_pkey PRIMARY KEY (order_id)
+                       buy_order_id int8 NOT NULL,
+                       sell_order_id int8 NOT NULL,
+                       CONSTRAINT trade_pkey PRIMARY KEY (trade_id)
 );
 
-COMMENT ON COLUMN public.trade.order_id IS '거래 아이디';
+COMMENT ON COLUMN public.trade.trade_id IS '거래 아이디';
 COMMENT ON COLUMN public.trade.trade_date IS '거래 시간';
-COMMENT ON COLUMN public.trade.buy_id IS '구매 주문 아이디';
-COMMENT ON COLUMN public.trade.sell_id IS '판매 주문 아이디';
+COMMENT ON COLUMN public.trade.buy_order_id IS '구매 주문 아이디';
+COMMENT ON COLUMN public.trade.sell_order_id IS '판매 주문 아이디';
 
 CREATE TABLE "order" (
                          order_id bigserial NOT NULL,

@@ -1,3 +1,4 @@
+/*
 package com.exchange.api;
 
 import com.exchange.postgres.entity.Todo;
@@ -32,3 +33,4 @@ public class TodoController {
         return todoRepository.findAll();
     }
 }
+*/
