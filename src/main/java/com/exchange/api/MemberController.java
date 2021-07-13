@@ -18,9 +18,9 @@ public class MemberController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public void register(@RequestBody Member member){
+    public Member register(@RequestBody Member member){
         logger.info(">>> member register");
-        memberService.register(member);
+        return memberService.register(member);
     }
 
     @PostMapping("/member")
