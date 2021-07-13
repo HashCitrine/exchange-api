@@ -16,6 +16,13 @@ public class MemberController {
     @Autowired
     private MemberService memberService;
 
+    @PostMapping("/register")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void register(@RequestBody Member member){
+        logger.info(">>> member register");
+        memberService.register(member);
+    }
+
     @PostMapping("/member")
     @ResponseStatus(HttpStatus.FOUND)
     public Object login(@RequestBody Member member){

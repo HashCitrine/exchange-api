@@ -31,4 +31,8 @@ public class MemberService {
     public Member memberInfo(Member member) {
         return memberRepository.findByMemberId(member.getMemberId());
     }
+
+    public void register(Member member) {
+        memberRepository.save(member);
+    }
 }
