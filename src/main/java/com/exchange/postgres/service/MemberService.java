@@ -41,8 +41,6 @@ public class MemberService {
     public Member register(Member member) {
         logger.info("member info: " + member);
 
-        member.setRole((Constants.ROLE)member.getRole());
-        member.setUseYn((Constants.YN)member.getUseYn());
         member.setRegDate(LocalDateTime.now());
         member.setUptDate(LocalDateTime.now());
 
