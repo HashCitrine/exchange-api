@@ -12,9 +12,10 @@ public class SHA256 {
             result.append(value);
         }
 
-        byte[] digests = sha256.digest();
         sha256.update(result.toString().getBytes());
         result = new StringBuffer();
+
+        byte[] digests = sha256.digest();
 
         for(byte digest : digests) {
             result.append(Integer.toHexString(digest & 0xFF).toUpperCase());
