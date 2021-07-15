@@ -29,4 +29,6 @@ public class Member {
     private LocalDateTime regDate;
 
     private LocalDateTime uptDate;
+
+//    private String token;
 }
