@@ -3,9 +3,10 @@ package com.exchange.postgres.service;
 import com.exchange.Constants;
 import com.exchange.postgres.entity.Bankstatement;
 import com.exchange.postgres.entity.Member;
+import com.exchange.postgres.entity.Wallet;
 import com.exchange.postgres.repository.BankstatementRepository;
 import com.exchange.postgres.repository.MemberRepository;
-import com.exchange.utils.JwtAndPassword;
+import com.exchange.postgres.repository.WalletRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,14 +22,16 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final BankstatementRepository bankstatementRepository;
+    private final WalletRepository walletRepository;
 //    private final JwtAndPassword jwtAndPassword;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
-    public MemberService(MemberRepository memberRepository, BankstatementRepository bankstatementRepository){
+    public MemberService(MemberRepository memberRepository, BankstatementRepository bankstatementRepository, WalletRepository walletRepository){
         this.memberRepository = memberRepository;
 //        this.jwtAndPassword = jwtAndPassword;
         this.bankstatementRepository = bankstatementRepository;
+        this.walletRepository = walletRepository;
     }
 
     public Member memberInfo(Member member) {
@@ -87,14 +90,21 @@ public class MemberService {
 
         bankstatementRepository.save(newBankStatement);
 
+        Wallet newWallet = new Wallet();
+        newWallet.setMemberId(memberId);
+        newWallet.setCurrency("MONEY");
+        newWallet.setAveragePrice(0L);
+
+        Long tmp = 0L;
+        if (type == Constants.TRANSACTION_TYPE.DEPOSIT) {
+            tmp += krw;
+        } else {
+            tmp -= krw;
+        }
+        newWallet.setQuantity(tmp);
+
+        walletRepository.save(newWallet);
+
         return "success";
-    }
-
-    public String commitDepositWithdraw(Member member){
-
-        logger.info("[commitDepositWithdraw]: " + bankstatementRepository.findByMemberId(member.getMemberId()));
-
-        // TODO: 아이디 가져오고 TransactionType 보고 Wallet에 +, - 한다.
-        return "commitDeposit";
     }
 }

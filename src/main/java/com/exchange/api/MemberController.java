@@ -51,10 +51,4 @@ public class MemberController {
         logger.info(">>> deposit type : " + type);
         return memberService.depositRequest(memberId, krw, type);
     }
-
-    @PostMapping("/member/commit")
-    @ResponseStatus(HttpStatus.OK)
-    public String checkDepositWithdraw(@RequestBody Member member){
-        return memberService.commitDepositWithdraw(member);
-    }
 }
