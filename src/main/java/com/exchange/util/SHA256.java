@@ -18,7 +18,7 @@ public class SHA256 {
         byte[] digests = sha256.digest();
 
         for(byte digest : digests) {
-            result.append(Integer.toHexString(digest & 0xFF).toUpperCase());
+            result.append(Integer.toString((digest[i]&0xff) + 0x100, 16).substring(1));
         }
 
         return result.toString();
