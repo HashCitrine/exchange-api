@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 @RestController
 public class MemberController {
 
@@ -40,15 +38,15 @@ public class MemberController {
         return memberService.memberInfo(member);
     }
 
-    @PostMapping("/member/deposit")
+    @PostMapping("/member/depositAndWithdraw")
     @ResponseStatus(HttpStatus.OK)
-    public String depositRequest(
+    public String depositAndWithdraw(
             @RequestParam(value = "memberId") String memberId,
             @RequestParam(value = "krw") Long krw,
             @RequestParam(value = "type") Constants.TRANSACTION_TYPE type){
         logger.info(">>> deposit member : " + memberId);
         logger.info(">>> deposit krw : " + krw);
         logger.info(">>> deposit type : " + type);
-        return memberService.depositRequest(memberId, krw, type);
+        return memberService.depositAndWithdraw(memberId, krw, type);
     }
 }

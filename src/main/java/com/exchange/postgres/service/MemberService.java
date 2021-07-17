@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.LocalDateTime;
 
@@ -69,19 +70,23 @@ public class MemberService {
 //        return "success";
 //    }
 
-    public String depositRequest(String memberId, Long krw,
-                                 Constants.TRANSACTION_TYPE type){
+    @ExceptionHandler(value = Exception.class)
+    public String depositAndWithdraw(String memberId, Long krw,
+                                     Constants.TRANSACTION_TYPE type){
         // 토큰
 //        if(member.getToken().equals("")){
 //            return "로그인이 안된 사용자입니다.";
 //        }
 
-        logger.info("[service]: " + memberId);
-        logger.info("[service]: " + krw);
-        logger.info("[service]: " + type);
+        saveBank(memberId, krw, type);
+        saveWallet(memberId, krw, type);
 
+        return "success";
+    }
+
+    private void saveBank(String memberId, Long krw, Constants.TRANSACTION_TYPE type) {
         Bankstatement newBankStatement = new Bankstatement();
-        newBankStatement.setTransactionId(1L);
+        newBankStatement.setTransactionId(1L); // 이거 GeneratedValue??
         newBankStatement.setTransactionDate(LocalDateTime.now());
         newBankStatement.setMemberId(memberId);
         newBankStatement.setTransactionType(type);
@@ -89,22 +94,31 @@ public class MemberService {
         newBankStatement.setKrw(krw);
 
         bankstatementRepository.save(newBankStatement);
+    }
+
+    private void saveWallet(String memberId, Long krw, Constants.TRANSACTION_TYPE type) {
+        Wallet existWallet = walletRepository.findByMemberId(memberId);
+        if (existWallet.getMemberId().equals(memberId)){
+            logger.info("[saveBank]: "+ "duplicated");
+
+            existWallet.setQuantity(checkDepositAndWithdraw(krw, type) + existWallet.getQuantity());
+            walletRepository.save(existWallet);
+            return;
+        }
 
         Wallet newWallet = new Wallet();
         newWallet.setMemberId(memberId);
         newWallet.setCurrency("MONEY");
         newWallet.setAveragePrice(0L);
-
-        Long tmp = 0L;
-        if (type == Constants.TRANSACTION_TYPE.DEPOSIT) {
-            tmp += krw;
-        } else {
-            tmp -= krw;
-        }
-        newWallet.setQuantity(tmp);
+        newWallet.setQuantity(checkDepositAndWithdraw(krw, type));
 
         walletRepository.save(newWallet);
+    }
 
-        return "success";
+    private Long checkDepositAndWithdraw(Long krw, Constants.TRANSACTION_TYPE type) {
+        if (type == Constants.TRANSACTION_TYPE.DEPOSIT) {
+            return krw;
+        }
+        return -krw;
     }
 }
