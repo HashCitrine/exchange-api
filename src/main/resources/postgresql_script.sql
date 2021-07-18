@@ -108,7 +108,7 @@ CREATE TABLE "order" (
                          order_type order_type NOT NULL,
                          price int8 NOT NULL,
                          quantity int8 NOT NULL,
-                         stock int8 NULL,
+                         stock int8 NOT NULL,
                          CONSTRAINT order_pkey PRIMARY KEY (order_id)
 );
 
