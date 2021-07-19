@@ -19,4 +19,6 @@ public class Trade {
     private Long buyOrderId;
 
     private Long sellOrderId;
+
+    private Long quantity;
 }

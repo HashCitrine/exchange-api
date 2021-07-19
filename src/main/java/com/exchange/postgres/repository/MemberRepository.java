@@ -13,7 +13,7 @@ public interface MemberRepository extends JpaRepository<Member, String> {
     @Query(value = "select member_id, reg_date from member where member_id=?1", nativeQuery = true)
     Object findMember(String memberId);
 
-    @Query("select m from member m where member_id=?1")
+    @Query(value = "select * from member where member_id=?1", nativeQuery = true)
     Member findByMemberId(String memberId);
 
 }

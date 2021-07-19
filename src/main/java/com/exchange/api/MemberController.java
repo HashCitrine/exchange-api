@@ -38,6 +38,7 @@ public class MemberController {
         return memberService.memberInfo(member);
     }
 
+    // RequestBody 로 한다.
     @PostMapping("/member/depositAndWithdraw")
     @ResponseStatus(HttpStatus.OK)
     public String depositAndWithdraw(

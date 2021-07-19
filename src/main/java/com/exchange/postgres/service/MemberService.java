@@ -26,8 +26,6 @@ public class MemberService {
     private final WalletRepository walletRepository;
 //    private final JwtAndPassword jwtAndPassword;
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
-
     public MemberService(MemberRepository memberRepository, BankstatementRepository bankstatementRepository, WalletRepository walletRepository){
         this.memberRepository = memberRepository;
 //        this.jwtAndPassword = jwtAndPassword;
@@ -40,7 +38,7 @@ public class MemberService {
     }
 
     public Member register(Member member) {
-        logger.info("member info: " + member);
+        log.info("member info: " + member);
 
         member.setRegDate(LocalDateTime.now());
         member.setUptDate(LocalDateTime.now());
@@ -85,12 +83,13 @@ public class MemberService {
     }
 
     private void saveBank(String memberId, Long krw, Constants.TRANSACTION_TYPE type) {
+        // 빌더 패턴 => set 안써도됨. (생성자임)
+
         Bankstatement newBankStatement = new Bankstatement();
-        newBankStatement.setTransactionId(1L); // 이거 GeneratedValue??
+        newBankStatement.setTransactionId(1L);
         newBankStatement.setTransactionDate(LocalDateTime.now());
         newBankStatement.setMemberId(memberId);
         newBankStatement.setTransactionType(type);
-        newBankStatement.setBank("국민은행");
         newBankStatement.setKrw(krw);
 
         bankstatementRepository.save(newBankStatement);
@@ -99,7 +98,7 @@ public class MemberService {
     private void saveWallet(String memberId, Long krw, Constants.TRANSACTION_TYPE type) {
         Wallet existWallet = walletRepository.findByMemberId(memberId);
         if (existWallet.getMemberId().equals(memberId)){
-            logger.info("[saveBank]: "+ "duplicated");
+            log.info("[saveBank]: "+ "duplicated");
 
             existWallet.setQuantity(checkDepositAndWithdraw(krw, type) + existWallet.getQuantity());
             walletRepository.save(existWallet);

@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter @Setter
-@Table(name = "order")
 public class Order {
 
     @Id
@@ -28,6 +27,8 @@ public class Order {
 
     private Long quantity;
 
-    private Long tradeId;
+    private Long stock;
+
+    // 매수 매도 할때 여기 값이 필요함
 
 }

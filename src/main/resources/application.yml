@@ -4,8 +4,6 @@ spring:
     url: jdbc:postgresql://localhost:5432/postgres?stringtype=unspecified
     username: postgres
     password: postgres
-    schema: classpath*:schema.sql
-    initialization-mode: always
   redis:
     host: 127.0.0.1
     port: 6379
