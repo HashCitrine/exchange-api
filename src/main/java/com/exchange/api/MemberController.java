@@ -1,6 +1,7 @@
 package com.exchange.api;
 
 import com.exchange.Constants;
+import com.exchange.postgres.entity.Bankstatement;
 import com.exchange.postgres.entity.Member;
 import com.exchange.postgres.service.MemberService;
 import org.slf4j.Logger;
@@ -41,13 +42,7 @@ public class MemberController {
     // RequestBody 로 한다.
     @PostMapping("/member/depositAndWithdraw")
     @ResponseStatus(HttpStatus.OK)
-    public String depositAndWithdraw(
-            @RequestParam(value = "memberId") String memberId,
-            @RequestParam(value = "krw") Long krw,
-            @RequestParam(value = "type") Constants.TRANSACTION_TYPE type){
-        logger.info(">>> deposit member : " + memberId);
-        logger.info(">>> deposit krw : " + krw);
-        logger.info(">>> deposit type : " + type);
-        return memberService.depositAndWithdraw(memberId, krw, type);
+    public String depositAndWithdraw(@RequestBody Bankstatement bankStatement){
+        return memberService.depositAndWithdraw(bankStatement);
     }
 }

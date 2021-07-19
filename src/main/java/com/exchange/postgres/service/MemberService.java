@@ -7,9 +7,10 @@ import com.exchange.postgres.entity.Wallet;
 import com.exchange.postgres.repository.BankstatementRepository;
 import com.exchange.postgres.repository.MemberRepository;
 import com.exchange.postgres.repository.WalletRepository;
+import com.exchange.utils.JwtAndPassword;
+import javassist.NotFoundException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,19 +20,13 @@ import java.time.LocalDateTime;
 @Service
 @Slf4j
 @Transactional
+@RequiredArgsConstructor
 public class MemberService {
 
     private final MemberRepository memberRepository;
     private final BankstatementRepository bankstatementRepository;
     private final WalletRepository walletRepository;
-//    private final JwtAndPassword jwtAndPassword;
-
-    public MemberService(MemberRepository memberRepository, BankstatementRepository bankstatementRepository, WalletRepository walletRepository){
-        this.memberRepository = memberRepository;
-//        this.jwtAndPassword = jwtAndPassword;
-        this.bankstatementRepository = bankstatementRepository;
-        this.walletRepository = walletRepository;
-    }
+    private final JwtAndPassword jwtAndPassword;
 
     public Member memberInfo(Member member) {
         return memberRepository.findByMemberId(member.getMemberId());
@@ -69,47 +64,47 @@ public class MemberService {
 //    }
 
     @ExceptionHandler(value = Exception.class)
-    public String depositAndWithdraw(String memberId, Long krw,
-                                     Constants.TRANSACTION_TYPE type){
+    public String depositAndWithdraw(Bankstatement bankStatement){
         // 토큰
 //        if(member.getToken().equals("")){
 //            return "로그인이 안된 사용자입니다.";
 //        }
 
-        saveBank(memberId, krw, type);
-        saveWallet(memberId, krw, type);
+        saveBank(bankStatement);
+        saveWallet(bankStatement);
 
         return "success";
     }
 
-    private void saveBank(String memberId, Long krw, Constants.TRANSACTION_TYPE type) {
-        // 빌더 패턴 => set 안써도됨. (생성자임)
-
-        Bankstatement newBankStatement = new Bankstatement();
-        newBankStatement.setTransactionId(1L);
-        newBankStatement.setTransactionDate(LocalDateTime.now());
-        newBankStatement.setMemberId(memberId);
-        newBankStatement.setTransactionType(type);
-        newBankStatement.setKrw(krw);
+    private void saveBank(Bankstatement bankStatement) {
+        Bankstatement newBankStatement = Bankstatement.builder()
+                .transactionDate(LocalDateTime.now())
+                .memberId(bankStatement.getMemberId())
+                .transactionType(bankStatement.getTransactionType())
+                .krw(bankStatement.getKrw())
+                .build();
 
         bankstatementRepository.save(newBankStatement);
     }
 
-    private void saveWallet(String memberId, Long krw, Constants.TRANSACTION_TYPE type) {
-        Wallet existWallet = walletRepository.findByMemberId(memberId);
-        if (existWallet.getMemberId().equals(memberId)){
+    private void saveWallet(Bankstatement bankStatement) {
+        Wallet existWallet = walletRepository.findByMemberId(bankStatement.getMemberId());
+        if (existWallet.getMemberId().equals(bankStatement.getMemberId())){
             log.info("[saveBank]: "+ "duplicated");
 
-            existWallet.setQuantity(checkDepositAndWithdraw(krw, type) + existWallet.getQuantity());
+            existWallet.setQuantity(checkDepositAndWithdraw(
+                    bankStatement.getKrw(), bankStatement.getTransactionType()) + existWallet.getQuantity());
+
             walletRepository.save(existWallet);
             return;
         }
 
-        Wallet newWallet = new Wallet();
-        newWallet.setMemberId(memberId);
-        newWallet.setCurrency("MONEY");
-        newWallet.setAveragePrice(0L);
-        newWallet.setQuantity(checkDepositAndWithdraw(krw, type));
+        Wallet newWallet = Wallet.builder()
+                .memberId(bankStatement.getMemberId())
+                .currency("MONEY")
+                .averagePrice(bankStatement.getKrw())
+                .quantity(checkDepositAndWithdraw(bankStatement.getKrw(), bankStatement.getTransactionType()))
+                .build();
 
         walletRepository.save(newWallet);
     }
