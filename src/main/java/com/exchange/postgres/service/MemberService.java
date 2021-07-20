@@ -51,6 +51,7 @@ public class MemberService {
                 .build();
 
         memberRepository.save(newMember);
+
         return "success register";
     }
 
@@ -61,16 +62,13 @@ public class MemberService {
             return "없는 회원입니다.";
         }
 
-        boolean checkPassword = jwtAndPassword.comparePassword(member.getPassword(), repoMember.getPassword());
-
-        if(!checkPassword){
+        if(!jwtAndPassword.comparePassword(member.getPassword(), repoMember.getPassword())){
             return "비밀번호가 틀렸습니다.";
         }
 
-        String token = jwtAndPassword.makeJwt(member.getMemberId());
-        repoMember.setToken(token);
-
+        repoMember.setToken(jwtAndPassword.makeJwt(member.getMemberId()));
         memberRepository.save(repoMember);
+
         return "success login";
     }
 
@@ -126,20 +124,19 @@ public class MemberService {
     }
 
     private Long checkDepositAndWithdraw(Long krw, Constants.TRANSACTION_TYPE type) {
-        if (type == Constants.TRANSACTION_TYPE.DEPOSIT) {
-            return krw;
+        if (type == Constants.TRANSACTION_TYPE.WITHDRAW) {
+            return -krw;
         }
-        return -krw;
+        return krw;
     }
 
     public String authUser(Member member) throws Exception {
-        if(jwtAndPassword
-                .checkJwt(memberRepository
+        if(!jwtAndPassword.checkJwt(memberRepository
                 .findByMemberId(member.getMemberId())
                 .getToken())){
-            return "success user auth";
+            return "failed to user auth";
         }
 
-        return "fail user auth";
+        return "success user auth";
     }
 }

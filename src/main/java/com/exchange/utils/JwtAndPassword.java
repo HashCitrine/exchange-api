@@ -62,7 +62,7 @@ public class JwtAndPassword {
                     .build().parseClaimsJws(jwt).getBody();
 
             log.info("expire time: " + claims.getExpiration());
-            log.info("name: " + claims.get("memberId"));
+            log.info("memberId: " + claims.get("memberId"));
 
             return true;
         }catch(ExpiredJwtException exception){
