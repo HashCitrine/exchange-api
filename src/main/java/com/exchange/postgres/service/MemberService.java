@@ -32,48 +32,64 @@ public class MemberService {
         return memberRepository.findByMemberId(member.getMemberId());
     }
 
-    public Member register(Member member) {
-        log.info("member info: " + member);
+    public String register(Member member) {
+        if (member.getMemberId().equals("") || member.getPassword().equals("")){
+            return "아이디와 비밀번호는 반드시 입력해주세요.";
+        }
 
-        member.setRegDate(LocalDateTime.now());
-        member.setUptDate(LocalDateTime.now());
+        if (memberRepository.findByMemberId(member.getMemberId()) != null){
+            return "이미 아이디가 존재합니다.";
+        }
 
-        return memberRepository.save(member);
+        Member newMember = Member.builder()
+                .memberId(member.getMemberId())
+                .password(jwtAndPassword.hashPassword(member.getPassword()))
+                .role(member.getRole())
+                .useYn(member.getUseYn())
+                .regDate(LocalDateTime.now())
+                .uptDate(LocalDateTime.now())
+                .build();
+
+        memberRepository.save(newMember);
+        return "success register";
     }
 
-//    public Member login(Member member) throws Exception {
-//        Member repoMember = memberRepository.findByMemberId(member.getMemberId());
-//
-//        boolean checkPassword = jwtAndPassword.comparePassword(member.getPassword(), repoMember.getPassword());
-//
-//        if(!checkPassword){
-//            throw new NotFoundException("wrong password...");
-//        }
-//
-//        String token = jwtAndPassword.makeJwt(member.getMemberId());
-//        repoMember.setToken(token);
-//
-//        return memberRepository.save(repoMember);
-//    }
-//
-//    public String logout(Member member){
-//        member.setToken("");
-//        memberRepository.save(member);
-//
-//        return "success";
-//    }
+    public String login(Member member) throws Exception {
+        Member repoMember = memberRepository.findByMemberId(member.getMemberId());
+
+        if(repoMember == null){
+            return "없는 회원입니다.";
+        }
+
+        boolean checkPassword = jwtAndPassword.comparePassword(member.getPassword(), repoMember.getPassword());
+
+        if(!checkPassword){
+            return "비밀번호가 틀렸습니다.";
+        }
+
+        String token = jwtAndPassword.makeJwt(member.getMemberId());
+        repoMember.setToken(token);
+
+        memberRepository.save(repoMember);
+        return "success login";
+    }
+
+    public String logout(Member member){
+        // 멤버를 가지고와서 set해야 그거(토큰)만 저장된다.
+        Member repoMember = memberRepository.findByMemberId(member.getMemberId());
+
+        repoMember.setToken("");
+        memberRepository.save(repoMember);
+
+        return "success logout";
+    }
 
     @ExceptionHandler(value = Exception.class)
     public String depositAndWithdraw(Bankstatement bankStatement){
-        // 토큰
-//        if(member.getToken().equals("")){
-//            return "로그인이 안된 사용자입니다.";
-//        }
-
         saveBank(bankStatement);
         saveWallet(bankStatement);
 
-        return "success";
+        return "success deposit or withdraw";
     }
 
     private void saveBank(Bankstatement bankStatement) {
@@ -114,5 +130,16 @@ public class MemberService {
             return krw;
         }
         return -krw;
+    }
+
+    public String authUser(Member member) throws Exception {
+        if(jwtAndPassword
+                .checkJwt(memberRepository
+                .findByMemberId(member.getMemberId())
+                .getToken())){
+            return "success user auth";
+        }
+
+        return "fail user auth";
     }
 }

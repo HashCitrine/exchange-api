@@ -73,6 +73,7 @@ CREATE TABLE "member" (
                           reg_date timestamptz NOT NULL,
                           upt_date timestamptz NOT NULL,
                           "password" varchar(100) NOT NULL,
+                          token varchar(200),
                           CONSTRAINT member_pkey PRIMARY KEY (member_id)
 );
 CREATE INDEX member_password_idx ON public.member USING btree (password);
@@ -83,6 +84,7 @@ COMMENT ON COLUMN public."member".use_yn IS '역할';
 COMMENT ON COLUMN public."member".reg_date IS '사용여부';
 COMMENT ON COLUMN public."member".upt_date IS '가입시간';
 COMMENT ON COLUMN public."member"."password" IS '수정시간';
+COMMENT ON COLUMN public."member".token IS '토큰';
 
 
 CREATE TABLE trade (

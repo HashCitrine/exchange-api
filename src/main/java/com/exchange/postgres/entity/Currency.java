@@ -6,6 +6,8 @@ import javax.persistence.*;
 
 @Entity
 @Getter @Setter
+@Builder
+@NoArgsConstructor @AllArgsConstructor
 public class Currency {
 
     @Id
