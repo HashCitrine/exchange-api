@@ -1,7 +1,6 @@
 package com.exchange.postgres.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -9,6 +8,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter @Setter
+@Builder
+@NoArgsConstructor @AllArgsConstructor
 public class Trade {
 
     @Id
@@ -19,4 +20,6 @@ public class Trade {
     private Long buyOrderId;
 
     private Long sellOrderId;
+
+    private Long quantity;
 }

@@ -6,10 +6,11 @@ import javax.persistence.*;
 
 @Entity
 @Getter @Setter
+@Builder
+@NoArgsConstructor @AllArgsConstructor
 public class Currency {
 
     @Id
-    @Column(name = "currency")
     private String currency;
 
     private String currencyKr;
