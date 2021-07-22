@@ -28,8 +28,9 @@ public class Order {
 
     private Long quantity;
 
+    // 미체결량만
     private Long stock;
 
-    // 매수 매도 할때 여기 값이 필요함
+    // 매수 매도 할때 여기 값이 필요함 (constants 타입 적기)
 
 }

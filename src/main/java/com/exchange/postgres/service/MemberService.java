@@ -82,8 +82,8 @@ public class MemberService {
         return "success logout";
     }
 
-    @ExceptionHandler(value = Exception.class)
     public String depositAndWithdraw(Bankstatement bankStatement){
+        // 이유 없는(?) 단순 에러 발생시 예외처리
         saveBank(bankStatement);
         saveWallet(bankStatement);
 
@@ -91,6 +91,7 @@ public class MemberService {
     }
 
     private void saveBank(Bankstatement bankStatement) {
+        // 이거 transactionDate 떄문에 빌더씀
         Bankstatement newBankStatement = Bankstatement.builder()
                 .transactionDate(LocalDateTime.now())
                 .memberId(bankStatement.getMemberId())
