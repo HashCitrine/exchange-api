@@ -3,9 +3,11 @@ package com.exchange.postgres.service;
 import com.exchange.Constants;
 import com.exchange.postgres.entity.Bankstatement;
 import com.exchange.postgres.entity.Member;
+import com.exchange.postgres.entity.Order;
 import com.exchange.postgres.entity.Wallet;
 import com.exchange.postgres.repository.BankstatementRepository;
 import com.exchange.postgres.repository.MemberRepository;
+import com.exchange.postgres.repository.OrderRepository;
 import com.exchange.postgres.repository.WalletRepository;
 import com.exchange.utils.JwtAndPassword;
 import javassist.NotFoundException;
@@ -26,6 +28,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final BankstatementRepository bankstatementRepository;
     private final WalletRepository walletRepository;
+    private final OrderRepository orderRepository;
     private final JwtAndPassword jwtAndPassword;
 
     public Member memberInfo(Member member) {
@@ -95,6 +98,16 @@ public class MemberService {
         return "success deposit or withdraw";
     }
 
+    public String authUser(Member member) throws Exception {
+        if(!jwtAndPassword.checkJwt(memberRepository
+                .findByMemberId(member.getMemberId())
+                .getToken())){
+            return "failed to user auth";
+        }
+
+        return "success user auth";
+    }
+
     private void saveBank(Bankstatement bankStatement) {
         // 이거 transactionDate 떄문에 빌더씀
         Bankstatement newBankStatement = Bankstatement.builder()
@@ -120,13 +133,18 @@ public class MemberService {
         return krw;
     }
 
-    public String authUser(Member member) throws Exception {
-        if(!jwtAndPassword.checkJwt(memberRepository
-                .findByMemberId(member.getMemberId())
-                .getToken())){
-            return "failed to user auth";
-        }
+    public String order(Order order) {
+        Order newOrder = Order.builder()
+                .orderDate(LocalDateTime.now())
+                .orderMember(order.getOrderMember())
+                .currency(order.getCurrency())
+                .orderType(order.getOrderType())
+                .price(order.getPrice())
+                .quantity(order.getQuantity())
+                .stock(order.getQuantity())
+                .build();
+        orderRepository.save(newOrder);
 
-        return "success user auth";
+        return "success order";
     }
 }

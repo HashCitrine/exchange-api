@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor @AllArgsConstructor
 public class Order {
 
-    @Id
+    @Id @GeneratedValue
     private Long orderId;
 
     private LocalDateTime orderDate;
@@ -30,7 +30,4 @@ public class Order {
 
     // 미체결량만
     private Long stock;
-
-    // 매수 매도 할때 여기 값이 필요함 (constants 타입 적기)
-
 }
