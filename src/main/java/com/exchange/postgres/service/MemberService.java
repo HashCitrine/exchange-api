@@ -52,6 +52,15 @@ public class MemberService {
 
         memberRepository.save(newMember);
 
+        Wallet newWallet = Wallet.builder()
+                .memberId(member.getMemberId())
+                .currency("MONEY")
+                .averagePrice(0L)
+                .quantity(0L)
+                .build();
+
+        walletRepository.save(newWallet);
+
         return "success register";
     }
 
@@ -73,11 +82,7 @@ public class MemberService {
     }
 
     public String logout(Member member){
-        // 멤버를 가지고와서 set해야 그거(토큰)만 저장된다.
-        Member repoMember = memberRepository.findByMemberId(member.getMemberId());
-
-        repoMember.setToken("");
-        memberRepository.save(repoMember);
+        memberRepository.updateMemberTokenSetNull(member.getMemberId());
 
         return "success logout";
     }
@@ -103,25 +108,9 @@ public class MemberService {
     }
 
     private void saveWallet(Bankstatement bankStatement) {
-        Wallet existWallet = walletRepository.findByMemberId(bankStatement.getMemberId());
-        if (existWallet.getMemberId().equals(bankStatement.getMemberId())){
-            log.info("[saveBank]: "+ "duplicated");
-
-            existWallet.setQuantity(checkDepositAndWithdraw(
-                    bankStatement.getKrw(), bankStatement.getTransactionType()) + existWallet.getQuantity());
-
-            walletRepository.save(existWallet);
-            return;
-        }
-
-        Wallet newWallet = Wallet.builder()
-                .memberId(bankStatement.getMemberId())
-                .currency("MONEY")
-                .averagePrice(bankStatement.getKrw())
-                .quantity(checkDepositAndWithdraw(bankStatement.getKrw(), bankStatement.getTransactionType()))
-                .build();
-
-        walletRepository.save(newWallet);
+        walletRepository.updateWallet(checkDepositAndWithdraw(
+                bankStatement.getKrw(), bankStatement.getTransactionType()),
+                bankStatement.getMemberId());
     }
 
     private Long checkDepositAndWithdraw(Long krw, Constants.TRANSACTION_TYPE type) {
