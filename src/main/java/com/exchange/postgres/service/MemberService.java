@@ -108,6 +108,22 @@ public class MemberService {
         return "success user auth";
     }
 
+    public String order(Order order) {
+//        order.setOrderId(1L);
+//        order.setOrderDate(LocalDateTime.now());
+//        order.setStock(order.getQuantity());
+//        orderRepository.save(order);
+        orderRepository.insertOrder(
+                order.getOrderMember(),
+                order.getCurrency(),
+                order.getOrderType().toString(),
+                order.getPrice(),
+                order.getQuantity(),
+                order.getQuantity());
+
+        return "success order";
+    }
+
     private void saveBank(Bankstatement bankStatement) {
         bankStatement.setTransactionDate(LocalDateTime.now());
         bankstatementRepository.save(bankStatement);
@@ -124,21 +140,5 @@ public class MemberService {
             return -krw;
         }
         return krw;
-    }
-
-    public String order(Order order) {
-//        order.setOrderId(1L);
-//        order.setOrderDate(LocalDateTime.now());
-//        order.setStock(order.getQuantity());
-//        orderRepository.save(order);
-        orderRepository.insertOrder(
-                order.getOrderMember(),
-                order.getCurrency(),
-                order.getOrderType().toString(),
-                order.getPrice(),
-                order.getQuantity(),
-                order.getQuantity());
-
-        return "success order";
     }
 }
