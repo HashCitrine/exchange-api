@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor @AllArgsConstructor
 public class Order {
 
-    @Id @GeneratedValue
+    @Id
     private Long orderId;
 
     private LocalDateTime orderDate;
@@ -28,6 +28,5 @@ public class Order {
 
     private Long quantity;
 
-    // 미체결량만
     private Long stock;
 }

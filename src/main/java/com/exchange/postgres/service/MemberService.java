@@ -109,15 +109,8 @@ public class MemberService {
     }
 
     private void saveBank(Bankstatement bankStatement) {
-        // 이거 transactionDate 떄문에 빌더씀
-        Bankstatement newBankStatement = Bankstatement.builder()
-                .transactionDate(LocalDateTime.now())
-                .memberId(bankStatement.getMemberId())
-                .transactionType(bankStatement.getTransactionType())
-                .krw(bankStatement.getKrw())
-                .build();
-
-        bankstatementRepository.save(newBankStatement);
+        bankStatement.setTransactionDate(LocalDateTime.now());
+        bankstatementRepository.save(bankStatement);
     }
 
     private void saveWallet(Bankstatement bankStatement) {
@@ -134,16 +127,17 @@ public class MemberService {
     }
 
     public String order(Order order) {
-        Order newOrder = Order.builder()
-                .orderDate(LocalDateTime.now())
-                .orderMember(order.getOrderMember())
-                .currency(order.getCurrency())
-                .orderType(order.getOrderType())
-                .price(order.getPrice())
-                .quantity(order.getQuantity())
-                .stock(order.getQuantity())
-                .build();
-        orderRepository.save(newOrder);
+//        order.setOrderId(1L);
+//        order.setOrderDate(LocalDateTime.now());
+//        order.setStock(order.getQuantity());
+//        orderRepository.save(order);
+        orderRepository.insertOrder(
+                order.getOrderMember(),
+                order.getCurrency(),
+                order.getOrderType().toString(),
+                order.getPrice(),
+                order.getQuantity(),
+                order.getQuantity());
 
         return "success order";
     }
