@@ -3,6 +3,7 @@ package com.exchange.api;
 import com.exchange.Constants;
 import com.exchange.postgres.entity.Bankstatement;
 import com.exchange.postgres.entity.Member;
+import com.exchange.postgres.entity.Order;
 import com.exchange.postgres.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,5 +55,11 @@ public class MemberController {
     @ResponseStatus(HttpStatus.OK)
     public String depositAndWithdraw(@RequestBody Bankstatement bankStatement){
         return memberService.depositAndWithdraw(bankStatement);
+    }
+
+    @PostMapping("/member/order")
+    @ResponseStatus(HttpStatus.OK)
+    public String order(@RequestBody Order order){
+        return memberService.order(order);
     }
 }

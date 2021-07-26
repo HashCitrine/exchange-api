@@ -3,9 +3,11 @@ package com.exchange.postgres.service;
 import com.exchange.Constants;
 import com.exchange.postgres.entity.Bankstatement;
 import com.exchange.postgres.entity.Member;
+import com.exchange.postgres.entity.Order;
 import com.exchange.postgres.entity.Wallet;
 import com.exchange.postgres.repository.BankstatementRepository;
 import com.exchange.postgres.repository.MemberRepository;
+import com.exchange.postgres.repository.OrderRepository;
 import com.exchange.postgres.repository.WalletRepository;
 import com.exchange.utils.JwtAndPassword;
 import javassist.NotFoundException;
@@ -26,6 +28,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final BankstatementRepository bankstatementRepository;
     private final WalletRepository walletRepository;
+    private final OrderRepository orderRepository;
     private final JwtAndPassword jwtAndPassword;
 
     public Member memberInfo(Member member) {
@@ -52,6 +55,15 @@ public class MemberService {
 
         memberRepository.save(newMember);
 
+        Wallet newWallet = Wallet.builder()
+                .memberId(member.getMemberId())
+                .currency("MONEY")
+                .averagePrice(0L)
+                .quantity(0L)
+                .build();
+
+        walletRepository.save(newWallet);
+
         return "success register";
     }
 
@@ -73,11 +85,7 @@ public class MemberService {
     }
 
     public String logout(Member member){
-        // 멤버를 가지고와서 set해야 그거(토큰)만 저장된다.
-        Member repoMember = memberRepository.findByMemberId(member.getMemberId());
-
-        repoMember.setToken("");
-        memberRepository.save(repoMember);
+        memberRepository.updateMemberTokenSetNull(member.getMemberId());
 
         return "success logout";
     }
@@ -90,38 +98,25 @@ public class MemberService {
         return "success deposit or withdraw";
     }
 
-    private void saveBank(Bankstatement bankStatement) {
-        // 이거 transactionDate 떄문에 빌더씀
-        Bankstatement newBankStatement = Bankstatement.builder()
-                .transactionDate(LocalDateTime.now())
-                .memberId(bankStatement.getMemberId())
-                .transactionType(bankStatement.getTransactionType())
-                .krw(bankStatement.getKrw())
-                .build();
+    public String authUser(Member member) throws Exception {
+        if(!jwtAndPassword.checkJwt(memberRepository
+                .findByMemberId(member.getMemberId())
+                .getToken())){
+            return "failed to user auth";
+        }
 
-        bankstatementRepository.save(newBankStatement);
+        return "success user auth";
+    }
+
+    private void saveBank(Bankstatement bankStatement) {
+        bankStatement.setTransactionDate(LocalDateTime.now());
+        bankstatementRepository.save(bankStatement);
     }
 
     private void saveWallet(Bankstatement bankStatement) {
-        Wallet existWallet = walletRepository.findByMemberId(bankStatement.getMemberId());
-        if (existWallet.getMemberId().equals(bankStatement.getMemberId())){
-            log.info("[saveBank]: "+ "duplicated");
-
-            existWallet.setQuantity(checkDepositAndWithdraw(
-                    bankStatement.getKrw(), bankStatement.getTransactionType()) + existWallet.getQuantity());
-
-            walletRepository.save(existWallet);
-            return;
-        }
-
-        Wallet newWallet = Wallet.builder()
-                .memberId(bankStatement.getMemberId())
-                .currency("MONEY")
-                .averagePrice(bankStatement.getKrw())
-                .quantity(checkDepositAndWithdraw(bankStatement.getKrw(), bankStatement.getTransactionType()))
-                .build();
-
-        walletRepository.save(newWallet);
+        walletRepository.updateWallet(checkDepositAndWithdraw(
+                bankStatement.getKrw(), bankStatement.getTransactionType()),
+                bankStatement.getMemberId());
     }
 
     private Long checkDepositAndWithdraw(Long krw, Constants.TRANSACTION_TYPE type) {
@@ -131,13 +126,19 @@ public class MemberService {
         return krw;
     }
 
-    public String authUser(Member member) throws Exception {
-        if(!jwtAndPassword.checkJwt(memberRepository
-                .findByMemberId(member.getMemberId())
-                .getToken())){
-            return "failed to user auth";
-        }
+    public String order(Order order) {
+//        order.setOrderId(1L);
+//        order.setOrderDate(LocalDateTime.now());
+//        order.setStock(order.getQuantity());
+//        orderRepository.save(order);
+        orderRepository.insertOrder(
+                order.getOrderMember(),
+                order.getCurrency(),
+                order.getOrderType().toString(),
+                order.getPrice(),
+                order.getQuantity(),
+                order.getQuantity());
 
-        return "success user auth";
+        return "success order";
     }
 }
