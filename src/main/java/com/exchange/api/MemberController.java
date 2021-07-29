@@ -1,15 +1,12 @@
 package com.exchange.api;
 
-import com.exchange.Constants;
+import com.exchange.kafka.OauthProducer;
 import com.exchange.postgres.entity.Bankstatement;
 import com.exchange.postgres.entity.Member;
 import com.exchange.postgres.entity.Order;
 import com.exchange.postgres.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private final MemberService memberService;
+    private final OauthProducer producer;
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
@@ -38,12 +36,6 @@ public class MemberController {
         return memberService.logout(member);
     }
 
-    @PostMapping("/member/auth")
-    @ResponseStatus(HttpStatus.OK)
-    public String authUser(@RequestBody Member member) throws Exception {
-        return memberService.authUser(member);
-    }
-
     @PostMapping("/member/info")
     @ResponseStatus(HttpStatus.FOUND)
     public Object memberInfo(@RequestBody Member member){
@@ -51,10 +43,11 @@ public class MemberController {
         return memberService.memberInfo(member);
     }
 
-    @PostMapping("/member/depositAndWithdraw")
+    @PostMapping("/member/reqOauth")
     @ResponseStatus(HttpStatus.OK)
-    public String depositAndWithdraw(@RequestBody Bankstatement bankStatement){
-        return memberService.depositAndWithdraw(bankStatement);
+    public String reqOauth(@RequestBody Bankstatement bankstatement){
+        this.producer.sendBankStatement(bankstatement);
+        return "success request oauth";
     }
 
     @PostMapping("/member/order")

@@ -90,24 +90,6 @@ public class MemberService {
         return "success logout";
     }
 
-    public String depositAndWithdraw(Bankstatement bankStatement){
-        // 이유 없는(?) 단순 에러 발생시 예외처리
-        saveBank(bankStatement);
-        saveWallet(bankStatement);
-
-        return "success deposit or withdraw";
-    }
-
-    public String authUser(Member member) throws Exception {
-        if(!jwtAndPassword.checkJwt(memberRepository
-                .findByMemberId(member.getMemberId())
-                .getToken())){
-            return "failed to user auth";
-        }
-
-        return "success user auth";
-    }
-
     public String order(Order order) {
 //        order.setOrderId(1L);
 //        order.setOrderDate(LocalDateTime.now());
@@ -122,23 +104,5 @@ public class MemberService {
                 order.getQuantity());
 
         return "success order";
-    }
-
-    private void saveBank(Bankstatement bankStatement) {
-        bankStatement.setTransactionDate(LocalDateTime.now());
-        bankstatementRepository.save(bankStatement);
-    }
-
-    private void saveWallet(Bankstatement bankStatement) {
-        walletRepository.updateWallet(checkDepositAndWithdraw(
-                bankStatement.getKrw(), bankStatement.getTransactionType()),
-                bankStatement.getMemberId());
-    }
-
-    private Long checkDepositAndWithdraw(Long krw, Constants.TRANSACTION_TYPE type) {
-        if (type == Constants.TRANSACTION_TYPE.WITHDRAW) {
-            return -krw;
-        }
-        return krw;
     }
 }
