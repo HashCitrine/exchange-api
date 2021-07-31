@@ -2,18 +2,36 @@ package com.exchange;
 
 public class Constants {
     public enum ROLE {
-        ADMIN, NORMAL
+        ADMIN,
+        NORMAL
     }
 
     public enum YN {
-        Y, N
+        Y,
+        N
     }
 
     public enum ORDER_TYPE{
-        BUY, SELL
+        BUY,
+        SELL
     }
 
     public enum TRANSACTION_TYPE{
-        DEPOSIT, WITHDRAW
+        DEPOSIT,    //
+        WITHDRAW    //
+    }
+
+    public enum STATUS {
+        REQS,   //
+        REQF,   //
+        TCKS,   //
+        TCKF,   //
+        SUCC,   //
+        FAIL    //
+    }
+
+    public enum TOPIC {
+        submitDw,
+        submitOrder
     }
 }

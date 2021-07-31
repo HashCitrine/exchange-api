@@ -1,7 +1,7 @@
 package com.exchange.api;
 
-import com.exchange.kafka.OauthProducer;
-import com.exchange.postgres.entity.Bankstatement;
+import com.exchange.kafka.ApiProducer;
+import com.exchange.postgres.entity.BankStatement;
 import com.exchange.postgres.entity.Member;
 import com.exchange.postgres.entity.Order;
 import com.exchange.postgres.service.MemberService;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private final MemberService memberService;
-    private final OauthProducer producer;
+    private final ApiProducer producer;
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
@@ -45,9 +45,9 @@ public class MemberController {
 
     @PostMapping("/member/reqOauth")
     @ResponseStatus(HttpStatus.OK)
-    public String reqOauth(@RequestBody Bankstatement bankstatement){
-        this.producer.sendBankStatement(bankstatement);
-        return "success request oauth";
+    public String reqOauth(@RequestBody BankStatement bankStatement,
+                           @RequestParam String token){
+        return this.producer.sendBankStatement(bankStatement, token);
     }
 
     @PostMapping("/member/order")
