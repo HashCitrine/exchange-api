@@ -54,23 +54,4 @@ public class JwtAndPassword {
 
         return builder.compact();
     }
-
-    public boolean checkJwt(String jwt) throws Exception {
-        try{
-            // 정상 수행되면 해당 토큰은 정상이다.
-            Claims claims = Jwts.parserBuilder().setSigningKey(DatatypeConverter.parseBase64Binary(secretKey))
-                    .build().parseClaimsJws(jwt).getBody();
-
-            log.info("expire time: " + claims.getExpiration());
-            log.info("memberId: " + claims.get("memberId"));
-
-            return true;
-        }catch(ExpiredJwtException exception){
-            log.info("토큰 만료");
-            return false;
-        }catch(JwtException exception){
-            log.info("토큰 변조");
-            return false;
-        }
-    }
 }

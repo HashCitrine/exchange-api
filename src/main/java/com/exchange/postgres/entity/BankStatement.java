@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Getter @Setter
 @Builder
 @NoArgsConstructor @AllArgsConstructor
-public class Bankstatement {
+public class BankStatement {
 
     @Id @GeneratedValue
     private Long transactionId;
@@ -23,4 +23,7 @@ public class Bankstatement {
     private Constants.TRANSACTION_TYPE transactionType;
 
     private Long krw;
+
+    @Enumerated(EnumType.STRING)
+    private Constants.STATUS status;
 }
