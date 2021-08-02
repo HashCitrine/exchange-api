@@ -37,7 +37,8 @@ public class ApiProducer {
         inputMap.put("transactionId", reqTransactionId);
 
         String jsonStr = reqGsonObj.toJson(inputMap);
+        log.info("[ApiProducer] jsonStr {}", jsonStr);
 
-        this.kafkaTemplate.send(Constants.TOPIC.submitDw.toString(), jsonStr);
+        this.kafkaTemplate.send(Constants.TOPIC.reqDw.toString(), jsonStr);
     }
 }

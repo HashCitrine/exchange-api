@@ -31,6 +31,7 @@ public class Constants {
     }
 
     public enum TOPIC {
+        reqDw,
         submitDw,
         submitOrder
     }
