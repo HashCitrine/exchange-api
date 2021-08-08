@@ -7,12 +7,12 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter @Setter
+@Getter @Setter @ToString
 @Builder
 @NoArgsConstructor @AllArgsConstructor
 public class BankStatement {
 
-    @Id @GeneratedValue
+    @Id
     private Long transactionId;
 
     private LocalDateTime transactionDate;
@@ -26,4 +26,6 @@ public class BankStatement {
 
     @Enumerated(EnumType.STRING)
     private Constants.STATUS status;
+
+    private LocalDateTime uptDate;
 }

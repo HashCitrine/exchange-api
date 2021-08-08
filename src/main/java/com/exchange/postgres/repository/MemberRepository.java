@@ -11,16 +11,6 @@ import java.util.List;
 
 public interface MemberRepository extends JpaRepository<Member, String> {
 
-    @Query(value = "select member_id, reg_date from member where member_id=?1", nativeQuery = true)
-    Object findMember(String memberId);
-
     @Query(value = "select * from member where member_id=?1", nativeQuery = true)
     Member findByMemberId(String memberId);
-
-    @Query(value = "select m.token from member m where member_id=?1", nativeQuery = true)
-    String findMemberToken(String memberId);
-
-    @Modifying
-    @Query(value = "update member set token='' where member_id=?1", nativeQuery = true)
-    void updateMemberTokenSetNull(String memberId);
 }
