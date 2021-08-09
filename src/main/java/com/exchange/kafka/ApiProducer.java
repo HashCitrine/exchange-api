@@ -3,15 +3,12 @@ package com.exchange.kafka;
 import com.exchange.Constants;
 import com.exchange.postgres.entity.BankStatement;
 import com.exchange.postgres.entity.Order;
-import com.exchange.postgres.repository.MemberRepository;
 import com.exchange.postgres.service.BankStatementService;
 import com.exchange.postgres.service.MemberService;
 import com.exchange.postgres.service.OrderService;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.apache.tomcat.util.bcel.Const;
-import org.hibernate.type.OrderedSetType;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 

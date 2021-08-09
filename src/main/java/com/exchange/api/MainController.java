@@ -7,13 +7,15 @@ import com.exchange.postgres.entity.Member;
 import com.exchange.postgres.entity.Order;
 import com.exchange.postgres.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@Slf4j
+@Log4j2
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class MainController {
 
     private final MemberService memberService;

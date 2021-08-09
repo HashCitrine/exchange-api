@@ -9,7 +9,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-class ExchangeMvcApplicationTests {
+class ExchangeApiApplicationTests {
 
     @Test
     void contextLoads() {
