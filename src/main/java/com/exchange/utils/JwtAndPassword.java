@@ -1,10 +1,8 @@
 package com.exchange.utils;
 
 import io.jsonwebtoken.*;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.mindrot.jbcrypt.BCrypt;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -15,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-@Slf4j
+@Log4j2
 public class JwtAndPassword {
 
     private final String secretKey = "this-is-long-long-exchange-api-secretKey-over-two-five-six-bits";

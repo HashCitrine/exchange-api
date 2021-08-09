@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter @Setter
+@Getter @Setter @ToString
 @Builder
 @NoArgsConstructor @AllArgsConstructor
 public class Order {
@@ -29,4 +29,9 @@ public class Order {
     private Long quantity;
 
     private Long stock;
+
+    @Enumerated(EnumType.STRING)
+    private Constants.STATUS status;
+
+    private LocalDateTime uptDate;
 }

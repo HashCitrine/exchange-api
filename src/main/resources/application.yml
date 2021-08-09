@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: exchange-api
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/postgres?stringtype=unspecified
@@ -23,3 +25,13 @@ logging:
   level:
     org.springframework: info
     org.hibernate: info
+
+# -- Eureka client
+server:
+  port: 8801
+eureka:
+  instance:
+    instance-id: api-instance01
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

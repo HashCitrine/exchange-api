@@ -1,19 +1,22 @@
 package com.exchange.api;
 
+import com.exchange.Constants;
 import com.exchange.kafka.ApiProducer;
 import com.exchange.postgres.entity.BankStatement;
 import com.exchange.postgres.entity.Member;
 import com.exchange.postgres.entity.Order;
 import com.exchange.postgres.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@Slf4j
+@Log4j2
 @RequiredArgsConstructor
-public class MemberController {
+@RequestMapping("/api")
+public class MainController {
 
     private final MemberService memberService;
     private final ApiProducer producer;
@@ -24,18 +27,6 @@ public class MemberController {
         return memberService.register(member);
     }
 
-    @PostMapping("/login")
-    @ResponseStatus(HttpStatus.FOUND)
-    public String login(@RequestBody Member member) throws Exception {
-        return memberService.login(member);
-    }
-
-    @PostMapping("/member/logout")
-    @ResponseStatus(HttpStatus.OK)
-    public String logout(@RequestBody Member member){
-        return memberService.logout(member);
-    }
-
     @PostMapping("/member/info")
     @ResponseStatus(HttpStatus.FOUND)
     public Object memberInfo(@RequestBody Member member){
@@ -43,16 +34,16 @@ public class MemberController {
         return memberService.memberInfo(member);
     }
 
-    @PostMapping("/member/reqOauth")
+    @PostMapping("/charge")
     @ResponseStatus(HttpStatus.OK)
     public String reqOauth(@RequestBody BankStatement bankStatement,
                            @RequestParam String token){
-        return this.producer.sendBankStatement(bankStatement, token);
+        return producer.normalProcess(bankStatement, Constants.TOPIC.reqDw, token);
     }
 
-    @PostMapping("/member/order")
+    @PostMapping("/order")
     @ResponseStatus(HttpStatus.OK)
-    public String order(@RequestBody Order order){
-        return memberService.order(order);
+    public String order(@RequestBody Order order, @RequestParam String token){
+        return producer.normalProcess(order, Constants.TOPIC.reqOrder, token);
     }
 }

@@ -13,9 +13,9 @@ public class Currency {
     @Id
     private String currency;
 
-    private String currencyKr;
+/*    private String currencyKr;
 
-    private String currencyAbbr;
+    private String currencyAbbr;*/
 
     private Long currentPrice;
 
