@@ -33,7 +33,7 @@ Spring Boot를 이용한 트레이딩 API 서버 제작
 
 😁 성능상의 이유로 `select`를 최대한 안 하려고 했지만, 이 부분은 반드시 필요해 보여서 예외 처리를 먼저 했습니다.
 
-```
+```java
 if (member.getMemberId().equals("") || member.getPassword().equals("")){
     return "아이디와 비밀번호는 반드시 입력해주세요.";
 }
@@ -45,7 +45,7 @@ if (memberRepository.findByMemberId(member.getMemberId()) != null){
 
 😀 bcrypt를 이용한 비밀번호 암호화 후, 유저 wallet과 함께 member를 생성합니다.
 
-```
+```java
 Member newMember = Member.builder()
                 .memberId(member.getMemberId())
                 .password(jwtAndPassword.hashPassword(member.getPassword()))
