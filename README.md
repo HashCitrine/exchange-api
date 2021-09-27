@@ -105,7 +105,3 @@ walletRepository.save(newWallet);
 ✔ 실패 결과 상태조차 DB에 반영하지 못한 경우, 로그로 남깁니다.
 
 ✔ 요청이 실패하면 returnMsg에 해당 오브젝트명과 Request Fail을 띄워줍니다.
-
-## 마무리
-
-블라블라
